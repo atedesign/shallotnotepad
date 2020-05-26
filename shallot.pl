@@ -1,5 +1,7 @@
 #!/usr/local/bin/perl
+#!/C:/Perl/site/lib
 use Tk;
+use utf8;
 # Main Window
 my $mw = new MainWindow;
 
