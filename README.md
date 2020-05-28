@@ -12,3 +12,5 @@ Version History
 1.01 implemented inserting bullet points
 
 1.02 implemented utf-8 encoding & a windows default path
+
+1.03 implemented find and replace
