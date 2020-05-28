@@ -30,6 +30,8 @@ $file -> command(-label =>"Exit", -underline => 1,
 
 ## Others Menu ##
 my $insert = $others -> cascade(-label =>"Insert", -underline => 0, -tearoff => 0);
+$insert -> command(-label =>"Find & Replace", 
+	-command => [\&find_replace, "Find & Replace"]);
 $insert -> command(-label =>"Name", 
 	-command => sub { $txt->insert('end',"Name : Thaddeus Roebuck Badgercock\n");});
 $insert -> command(-label =>"Bullet Point", -command=>sub { 
@@ -52,13 +54,15 @@ This is a simple text editor written in Perl Tk. This program is licensed under 
 "); });
 
 MainLoop;
-
+sub find_replace {
+	$txt->FindAndReplacePopUp;
+}
 sub savefunction {
-     my $fileDataToSave=$txt->get("1.0","end"); # or use contents of editor window
+     my $fileDataToSave=$txt->get("1.0","end"); 
     # Trigger dialog
     $filename = $mw->getSaveFile( -title =>  "Selecting file to Save",
              -defaultextension => '.txt', -initialdir => '.' );
-    # save the file (lots of ways here is one)
+    # save the file 
     open(my $fh, '>', $filename) or die $!;
    print $fh $fileDataToSave;
    close $fh;
@@ -72,7 +76,7 @@ sub openfunction {
      open($fh, '<', $filename) or die $!;
      my $file_content = do { local $/; <$fh> };
      close $fh;
-    $txt->Contents($file_content) # or put the file into textWindow here
+    $txt->Contents($file_content)
 }
 
 sub menuClicked {
