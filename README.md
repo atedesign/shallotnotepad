@@ -14,3 +14,5 @@ Version History
 1.02 implemented utf-8 encoding & a windows default path
 
 1.03 implemented find and replace
+
+1.04 implemented highlight, underline, title and stippling for annotation
