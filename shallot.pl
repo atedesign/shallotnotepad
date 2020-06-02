@@ -2,11 +2,13 @@
 #!/C:/Perl/site/lib
 use Tk;
 use utf8;
+use vars qw/$TOP/;
+
 # Main Window
 my $mw = new MainWindow;
 
 #Making a text area
-my $txt = $mw -> Scrolled('Text',-width => 50,-scrollbars=>'e') -> pack ();
+my $txt = $mw -> Scrolled('Text', -width => 50,-scrollbars=>'e') -> pack (), -setgrid => true;
 
 #Declare that there is a menu
 my $mbar = $mw -> Menu();
@@ -30,7 +32,17 @@ $file -> command(-label =>"Exit", -underline => 1,
 
 ## Others Menu ##
 my $insert = $others -> cascade(-label =>"Insert", -underline => 0, -tearoff => 0);
-$insert -> command(-label =>"Find & Replace", 
+		
+		$insert -> command(-label =>"Highlight", 
+	-command => [\&highlight, "Highlight"]);
+	$insert -> command(-label =>"Underline", 
+	-command => [\&underline, "Underline"]);
+		$insert -> command(-label =>"Title", 
+	-command => [\&bold, "Title"]);
+	$insert -> command(-label =>"Stippling", 
+	-command => [\&stippling, "Stippling"]);
+	
+	$insert -> command(-label =>"Find & Replace", 
 	-command => [\&find_replace, "Find & Replace"]);
 $insert -> command(-label =>"Name", 
 	-command => sub { $txt->insert('end',"Name : Thaddeus Roebuck Badgercock\n");});
@@ -53,15 +65,53 @@ $help -> command(-label =>"About", -command => sub {
 This is a simple text editor written in Perl Tk. This program is licensed under the GNU Public License and is Free Software.
 "); });
 
-MainLoop;
+
+## Tags ##
+$txt->tag(qw/configure bgstipple  -background black -borderwidth 0
+	    -bgstipple gray12/);
+$txt->tag(qw/configure bold    -font C_bold/);
+$txt->tag(qw/configure color1 -background/ => '#a0b7ce');
+$txt->tag(qw/configure raised -background white -relief raised/);
+$txt->tag(qw/configure sunken -background white -relief sunken/);
+$txt->tag(qw/configure underline  -underline on/);
+
+MainLoop; 
+
 sub find_replace {
 	$txt->FindAndReplacePopUp;
 }
+
+sub stippling {
+ $txt->insert('insert', '  ', 'bgstipple');
+    $txt->SetCursor( 'insert - 1 chars' );
+} # end style
+
+sub bold {
+	 $txt->insert('insert', '  ', 'bold');
+    $txt->SetCursor( 'insert - 1 chars' );
+}
+
+sub highlight {
+ $txt->insert('insert', '  ', 'color1');
+    $txt->SetCursor( 'insert - 1 chars' );
+ }
+ 
+ sub raised {
+	  $txt->insert('insert', '  ', 'raised');
+    $txt->SetCursor( 'insert - 1 chars' );
+ }
+ 
+  sub underline {
+ $txt->insert('insert', '  ', 'underline');
+    $txt->SetCursor( 'insert - 1 chars' );
+ }
+
+
 sub savefunction {
      my $fileDataToSave=$txt->get("1.0","end"); 
     # Trigger dialog
     $filename = $mw->getSaveFile( -title =>  "Selecting file to Save",
-             -defaultextension => '.txt', -initialdir => '.' );
+             -defaultextension => '.rtf', -initialdir => '.' );
     # save the file 
     open(my $fh, '>', $filename) or die $!;
    print $fh $fileDataToSave;
@@ -72,7 +122,6 @@ sub openfunction {
 	  # function to get file dialog box
      $filename = $mw->getOpenFile( -title => "Selecting file to Load",
      -defaultextension => '.txt', -initialdir => '.' );
-     # function to load file into string e.g. if you have use File::Slurp
      open($fh, '<', $filename) or die $!;
      my $file_content = do { local $/; <$fh> };
      close $fh;
@@ -86,6 +135,5 @@ This function is not implemented yet.");
 }
 
 #todo:
-#fix open functionality
-#figure out a way to highlight, underline notes
 #figure out how to package as monolithic executables for various platforms
+
